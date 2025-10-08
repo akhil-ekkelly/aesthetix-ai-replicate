@@ -3,7 +3,7 @@ name: Deploy to Replicate
 on:
   push:
     branches:
-      - main # This workflow runs every time you push to the 'main' branch
+      - main
 
 jobs:
   deploy:
@@ -12,10 +12,25 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
       - name: Set up Cog and log in to Replicate
         uses: replicate/setup-cog@v1
         with:
           token: ${{ secrets.REPLICATE_API_TOKEN }}
+
+      - name: Verify model files
+        run: |
+          ls -l
+          cat cog.yaml
 
       - name: Push model to Replicate
         run: cog push r8.im/${{ github.repository }}
