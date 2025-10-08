@@ -3,34 +3,43 @@ name: Deploy to Replicate
 on:
   push:
     branches:
-      - main
+      - main  # Deploys whenever you push to the main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
+      # 1️⃣ Checkout your repository
       - name: Check out repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      # 3️⃣ Install dependencies
+      - name: Install Python dependencies
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Set up Cog and log in to Replicate
+      # 4️⃣ Set up Cog and log in to Replicate
+      - name: Set up Cog CLI
         uses: replicate/setup-cog@v1
         with:
           token: ${{ secrets.REPLICATE_API_TOKEN }}
 
+      # 5️⃣ Verify model files exist (debug step)
       - name: Verify model files
         run: |
-          ls -l
+          echo "Listing repository files:"
+          ls -la
+          echo "Checking cog.yaml:"
           cat cog.yaml
 
+      # 6️⃣ Push model to Replicate
       - name: Push model to Replicate
         run: cog push r8.im/${{ github.repository }}
