@@ -27,8 +27,8 @@ jobs:
           pip install -r requirements.txt
 
       # 4️⃣ Set up Cog and log in to Replicate
-      - name: Set up Cog CLI
-        uses: replicate/setup-cog@v1
+   - name: Set up Cog and log in to Replicate
+  uses: YourUsername/setup-cog@main
         with:
           token: ${{ secrets.REPLICATE_API_TOKEN }}
 
