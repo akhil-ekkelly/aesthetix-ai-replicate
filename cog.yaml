@@ -1,4 +1,5 @@
 # cog.yaml
+base_image: "r8.im/replicate/cog-cuda-11.8:python-3.10"
 build:
   # We need a GPU to run our model
   gpu: true
