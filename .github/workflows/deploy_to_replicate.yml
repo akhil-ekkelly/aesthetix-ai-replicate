@@ -9,15 +9,34 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      # 1️⃣ Checkout the repository
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Cog
-        # This must point to your forked repository
-        uses: akhil-ekkelly/setup-cog@main
+      # 2️⃣ Set up Python (if needed for dependencies)
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-      - name: Log in to Replicate Docker Registry
-        run: echo ${{ secrets.REPLICATE_API_TOKEN }} | docker login r8.im -u ${{ github.repository_owner }} --password-stdin
-      
+      # 3️⃣ Install Python dependencies (if your model has any)
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4️⃣ Set up Cog and log in non-interactively
+      - name: Set up Cog and authenticate
+        uses: replicate/setup-cog@v1
+        with:
+          token: ${{ secrets.REPLICATE_API_TOKEN }}
+
+      # 5️⃣ Verify model files
+      - name: Verify model files
+        run: |
+          ls -la
+          cat cog.yaml
+
+      # 6️⃣ Push model to Replicate
       - name: Push model to Replicate
         run: cog push r8.im/${{ github.repository }}
