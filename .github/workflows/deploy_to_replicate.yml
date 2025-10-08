@@ -1,0 +1,21 @@
+name: Deploy to Replicate
+
+on:
+  push:
+    branches:
+      - main # This workflow runs every time you push to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Cog and log in to Replicate
+        uses: replicate/setup-cog@v1
+        with:
+          token: ${{ secrets.REPLICATE_API_TOKEN }}
+
+      - name: Push model to Replicate
+        run: cog push r8.im/${{ github.repository }}
