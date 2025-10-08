@@ -12,28 +12,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+      - name: Set up Cog
+        uses: akhil-ekkelly/setup-cog@main # Make sure this is your forked repo
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      # CORRECTED INDENTATION FOR THE STEP BELOW
-      - name: Set up Cog and log in to Replicate
-        uses: akhil-ekkelly/setup-cog@main
-        with:
-          token: ${{ secrets.REPLICATE_API_TOKEN }}
-
-      - name: Verify model files
-        run: |
-          echo "Listing repository files:"
-          ls -la
-          echo "Checking cog.yaml:"
-          cat cog.yaml
-
+      - name: Log in to Replicate
+        run: cog login
+        env:
+          REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
+          
       - name: Push model to Replicate
         run: cog push r8.im/${{ github.repository }}
