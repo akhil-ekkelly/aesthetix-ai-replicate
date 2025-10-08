@@ -13,10 +13,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Cog
-        uses: akhil-ekkelly/setup-cog@main # Make sure this is your forked repo
+        # This must point to your forked repository
+        uses: akhil-ekkelly/setup-cog@main
 
-      - name: Log in to Replicate
-        run: echo ${{ secrets.REPLICATE_API_TOKEN }} | cog login
-          
+      - name: Log in to Replicate Docker Registry
+        run: echo ${{ secrets.REPLICATE_API_TOKEN }} | docker login r8.im -u ${{ github.repository_owner }} --password-stdin
+      
       - name: Push model to Replicate
         run: cog push r8.im/${{ github.repository }}
